@@ -1,5 +1,3 @@
-
-
 <div align="center">
 
 ```
@@ -26,6 +24,11 @@
 ![Architecture](https://img.shields.io/badge/architecture-stateless-blue?style=flat-square)
 ![Crypto](https://img.shields.io/badge/crypto-ephemeral-purple?style=flat-square)
 ![Hardware](https://img.shields.io/badge/trust-hardware--derived-green?style=flat-square)
+
+![Argon2id](https://img.shields.io/badge/Argon2id-Memory--hard%20KDF-4A90D9?style=flat-square&logo=keycdn&logoColor=white)
+![HKDF](https://img.shields.io/badge/HKDF-Key%20Expansion-7B61FF?style=flat-square&logo=letsencrypt&logoColor=white)
+![BLAKE3](https://img.shields.io/badge/BLAKE3-Hashing-00B37E?style=flat-square&logo=hashnode&logoColor=white)
+![SHA-3](https://img.shields.io/badge/SHA--3-Auxiliary%20%2F%20Fallback-F5A623?style=flat-square&logo=openssl&logoColor=white)
 
 </div>
 
@@ -86,7 +89,17 @@ The originating machine is the source of truth.
                 ┌─────────────────┐
                 │ Hardware Trust  │
                 │      Pool       │
-                └─────────────────┘
+                └────────┬────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│                  CRYPTOGRAPHIC PIPELINE                  │
+├─────────────────────┬───────────────────────────────────┤
+│  Argon2id           │  Memory-hard KDF                  │
+│  HKDF               │  Key expansion                    │
+│  BLAKE3             │  Hashing                          │
+│  SHA-3              │  Auxiliary / fallback             │
+└─────────────────────┴───────────────────────────────────┘
 ```
 
 Signals collected from:
@@ -118,10 +131,16 @@ Raw signals are noisy, platform-variable, and non-cryptographic. This layer tran
     │ Entropy Derivation│  ← Extract high-quality entropy
     └──────┬───────────┘
            ▼
-    ┌──────────────────┐
-    │  Trust           │
-    │  Reconstruction  │  ← Cryptographic derivation pipeline
-    └──────┬───────────┘
+    ┌──────────────────────────────────────────────────────────┐
+    │  Trust Reconstruction  ←  Cryptographic derivation pipeline│
+    ├──────────────────────────────────────────────────────────┤
+    │                                                          │
+    │  Argon2id  ·  Memory-hard KDF                            │
+    │  HKDF      ·  Key expansion                              │
+    │  BLAKE3    ·  Hashing                                    │
+    │  SHA-3     ·  Auxiliary / fallback                       │
+    │                                                          │
+    └──────┬───────────────────────────────────────────────────┘
            ▼
    Derived Trust Material
 ```
@@ -303,6 +322,13 @@ An attacker cannot steal what doesn't exist. Long-lived credentials are the most
 | Insider key exfiltration | ❌ Possible | ✅ Key doesn't persist to exfiltrate |
 
 ---
+
+| Primitive | Role | Why |
+|:---|:---|:---|
+| `Argon2id` | Memory-hard KDF | Defeats GPU/ASIC brute-force on captured signals |
+| `HKDF` | Key expansion | Structured derivation from high-entropy seed |
+| `BLAKE3` | Hashing | High-speed, cryptographically sound, constant-time |
+| `SHA-3` | Auxiliary / fallback | Standardized Keccak-based alternative |
 
 ## Limitations & Honest Caveats
 
