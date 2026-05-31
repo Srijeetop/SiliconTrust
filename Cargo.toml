@@ -1,0 +1,42 @@
+[package]
+name = "stcs"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "stcs"
+path = "src/main.rs"
+
+[dependencies]
+chacha20poly1305 = "0.10"
+argon2 = "0.5"
+blake3 = "1"
+sha3 = "0.10"
+zeroize = { version = "1", features = ["derive"] }
+clap = { version = "4", features = ["derive"] }
+rand = "0.8"
+raw-cpuid = "11"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.52"
+
+windows = { version = "0.58", features = [
+    "Win32_Foundation",
+
+    "Win32_System_SystemInformation",
+    "Win32_System_Registry",
+    "Win32_System_Ioctl",
+    "Win32_System_IO",
+
+    "Win32_Storage_FileSystem",
+
+    "Win32_Security",
+
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_NetworkManagement_Ndis",
+    "Win32_Networking_WinSock",
+
+    "Win32_Devices_DeviceAndDriverInstallation",
+] }
