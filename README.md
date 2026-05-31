@@ -208,7 +208,7 @@ The ephemeral key performs the requested operation:
   — No key file
   — No persistent secret
   — No long-lived credential storage
-  — No recovery path (by design)
+  — No automatic recovery; optional user‑managed recovery function available
 ```
 
 ---
@@ -261,6 +261,16 @@ Destroy Session Key ◄───────────────────
      │
      ▼
 Plaintext Output
+```
+
+### Emergency Recovery Function
+
+```
+To allow decryption on a different machine in case of hardware failure:
+Before disaster - Manually retrieve the Hardware Fingerprint and feed it to the recovery function along with the passphrase.
+
+   stcs.exe recover encrypted.stcs -f my-machine.json -p "passphrase"
+
 ```
 
 > **Key insight:** Decryption doesn't retrieve a stored key. It *re-derives* the same key from the same machine. If the machine changes, the key changes. The data becomes inaccessible — not because the key was protected, but because the key can no longer be reconstructed.
@@ -330,15 +340,6 @@ An attacker cannot steal what doesn't exist. Long-lived credentials are the most
 | `BLAKE3` | Hashing | High-speed, cryptographically sound, constant-time |
 | `SHA-3` | Auxiliary / fallback | Standardized Keccak-based alternative |
 
-## Limitations & Honest Caveats
-
-Silicon Trust is not magic. Understand the tradeoffs:
-
-- **Hardware changes break access.** CPU replacement, TPM reset, or significant platform changes will alter signal collection and prevent decryption of previously encrypted data. Plan accordingly.
-- **No recovery path by design.** There is no master key, no escrow, no recovery phrase. This is intentional. It is also irreversible.
-- **Signal stability is critical.** The normalization layer must handle expected hardware variance (firmware updates, minor state changes) without over-correcting and allowing too much drift.
-- **Not a replacement for all security.** Silicon Trust addresses key storage and portability. It does not replace access controls, network security, or physical security.
-- **Virtualization reduces guarantees.** Hardware signals in VMs are partially emulated. The architecture provides weaker hardware-binding guarantees in virtualized environments.
 
 ---
 
