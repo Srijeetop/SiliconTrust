@@ -265,12 +265,11 @@ Plaintext Output
 
 ### Emergency Recovery Function
 
-```
 To allow decryption on a different machine in case of hardware failure:
 Before disaster - Manually retrieve the Hardware Fingerprint and feed it to the recovery function along with the passphrase.
 
-   stcs.exe recover encrypted.stcs -f my-machine.json -p "passphrase"
-
+```bash
+stcs.exe recover encrypted.stcs -f my-machine.json -p "passphrase"
 ```
 
 > **Key insight:** Decryption doesn't retrieve a stored key. It *re-derives* the same key from the same machine. If the machine changes, the key changes. The data becomes inaccessible — not because the key was protected, but because the key can no longer be reconstructed.
