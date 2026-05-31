@@ -265,7 +265,7 @@ Plaintext Output
 
 ### Emergency Recovery Function
 
-To allow decryption on a different machine in case of hardware failure:
+To allow decryption on a different machine in case of hardware failure.
 Before disaster - Manually retrieve the Hardware Fingerprint and feed it to the recovery function along with the passphrase.
 
 ```bash
