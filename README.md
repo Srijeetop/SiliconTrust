@@ -355,6 +355,56 @@ It's about a different model of what a secret is.
 
 ---
 
+## Getting Started
+
+```bash
+git clone https://github.com/your-org/SiliconTrust.git
+cd SiliconTrust
+cargo build --release
+cd target/release
+```
+
+---
+
+## Command Usage
+
+### Encrypt a file
+```bash
+stcs.exe encrypt document.docx --passphrase "secret phrase" --delete
+```
+- Output: `document.docx.stcs`
+- `--delete` removes the original plaintext after successful encryption.
+
+### Decrypt a file (on the same machine)
+```bash
+stcs.exe decrypt document.docx.stcs --passphrase "secret phrase"
+```
+
+### Emergency recovery (on a different machine)
+If the original machine fails but you have the fingerprint file and passphrase:
+
+```bash
+stcs.exe recover document.docx.stcs -f my-machine.json -p "secret phrase"
+```
+- `-f` : the JSON fingerprint
+- `-p` : the exact passphrase used during encryption
+- Output: `document.docx` (original filename)
+
+> ⚠️ **Manual fingerprint creation** – You have to collect the raw hardware values yourself, you can write a JSON file manually (using the same 9 field names and exact value strings) and pass it to `-f`. An example template:
+> ```json
+> {
+>   "cpuid": "...",
+>   "smbios_uuid": "...",
+>   "nic_mac": "...",
+>   "ssd_serial": "...",
+>   "tpm_ek": "...",
+>   "gpu_device_id": "...",
+>   "dimm_spd": "...",
+>   "cache_topology": "...",
+>   "pcie_topology": "..."
+> }
+> ```
+
 <div align="center">
 
 **Silicon Trust**
